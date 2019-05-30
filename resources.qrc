@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+    <file alias="back.png">resources/back.png</file>
+    <file alias="next.png">resources/next.png</file>
+    <file alias="pause.png">resources/pause.png</file>
+    <file alias="play.png">resources/play.png</file>
+    <file alias="stop.png">resources/stop.png</file>
+    <file alias="timeline/triangle_slider">resources/triangle_slider.png</file>
+    <file alias="timeline/index_slider">resources/index_slider.png</file>
+    <file alias="timeline/icon">resources/icon.png</file>
+ </qresource>
+ </RCC>

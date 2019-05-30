@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 2.6)
+project(rock_replay_cpp)
+
+include(FindPkgConfig)
+pkg_check_modules(pocolog_cpp pocolog_cpp)
+
+find_package ( Eigen3 REQUIRED )
+
+if (NOT DEFINED ENV{AUTOPROJ_CURRENT_ROOT})
+  message(SEND_ERROR "AUTOPROJ_CURRENT_ROOT defined.")
+  return()
+else()
+  message(STATUS "AUTOPROJ_CURRENT_ROOT environment variable not defined.")
+  set(ROCK_ROBOTICS_LIBRARY_DIR "$ENV{AUTOPROJ_CURRENT_ROOT}/install/lib")
+  set(ROCK_ROBOTICS_INCLUDE_DIR "$ENV{AUTOPROJ_CURRENT_ROOT}/install/include")
+endif()
+
+if(NOT pocolog_cpp_FOUND)
+  message( SEND_ERROR "pocolog_cpp not found.")
+  return()
+endif()
+
+link_directories(
+  ${ROCK_ROBOTICS_LIBRARY_DIR}
+)
+
+add_executable(
+  ${PROJECT_NAME}
+  src/main.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    ${ROCK_ROBOTICS_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+    ${pocolog_cpp_LIBRARIES}
+)

@@ -1,0 +1,7 @@
+<package>
+    <description brief="rock-replay-cpp">
+        It replays rock log using C++ pocolog_cpp library.
+    </description>
+    <author>Gustavo Neves/gustavo.neves12@gmail.com</author>
+    <depend package="gui/rock_widget_collection" />
+</package>
