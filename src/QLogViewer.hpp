@@ -169,6 +169,8 @@ protected slots:
 
   void setStepValue(int step);
 
+  void currentIndexEditingFinished();
+
 protected:
   virtual void update();
 
@@ -188,6 +190,8 @@ protected:
   virtual void construct(LogReader *reader,
                          const QString &stream_name,
                          int rate = 100);
+
+  void updateSample();
 
 
 private:
@@ -232,6 +236,7 @@ private:
   QString stream_name_;
   QString filename_;
 
+  bool running_;
 
   friend class RegisterQLogViewer;
 };

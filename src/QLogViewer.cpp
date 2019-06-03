@@ -185,6 +185,7 @@ QLogViewer::QLogViewer()
     , end_box_(NULL)
     , step_box_(NULL)
     , step_(0)
+    , running_(false)
 {
   setWindowTitle("LogViewer");
 
@@ -296,6 +297,7 @@ QLogViewer::QLogViewer()
 
   connect(start_box_, SIGNAL(valueChanged(int)), timeline_, SLOT(setStartMarkerIndex(int)));
   connect(end_box_, SIGNAL(valueChanged(int)), timeline_, SLOT(setEndMarkerIndex(int)));
+  connect(current_index_box_, SIGNAL(editingFinished()), this, SLOT(currentIndexEditingFinished()));
 
   QVBoxLayout *main_layout = new QVBoxLayout();
   main_layout->addLayout(all_layout);
@@ -323,6 +325,16 @@ QWidget *QLogViewer::createWidget()
 
 void QLogViewer::timeout()
 {
+  updateSample();
+}
+
+void QLogViewer::update()
+{
+  throw std::runtime_error("update() not implemented");
+}
+
+void QLogViewer::updateSample()
+{
   timeline_->setSliderIndex(stream_.current_sample_index());
 
   if (stream_.current_sample_index() < stream_.total_samples() &&
@@ -331,11 +343,6 @@ void QLogViewer::timeout()
     stream_.set_current_sample_index(stream_.current_sample_index() + step_);
     update();
   }
-}
-
-void QLogViewer::update()
-{
-  throw std::runtime_error("update() not implemented");
 }
 
 void QLogViewer::backButtonClicked(bool checked)
@@ -349,6 +356,7 @@ void QLogViewer::playButtonClicked(bool checked)
   if (stream_.current_sample_index() < (size_t)timeline_->getStartMarkerIndex())
     stream_.set_current_sample_index(timeline_->getStartMarkerIndex());
   timer_.start(rate_);
+  running_  = true;
 }
 
 void QLogViewer::nextButtonClicked(bool checked)
@@ -359,6 +367,7 @@ void QLogViewer::nextButtonClicked(bool checked)
 
 void QLogViewer::stopButtonClicked(bool checked)
 {
+  running_ = false;
   timer_.stop();
 }
 
@@ -451,6 +460,12 @@ void QLogViewer::sliderMoved(int index)
 void QLogViewer::setStepValue(int step)
 {
   step_ = step;
+}
+
+void QLogViewer::currentIndexEditingFinished()
+{
+  timeline_->setSliderIndex(current_index_box_->value());
+  updateSample();
 }
 
 void QLogViewer::construct(
