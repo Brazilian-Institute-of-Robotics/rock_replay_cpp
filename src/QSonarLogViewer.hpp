@@ -14,7 +14,7 @@ class QSonarLogViewer : public QLogViewer
 {
 protected:
   virtual QWidget* createWidget();
-  virtual void update();
+  virtual base::Time update();
 };
 
 REGISTER_LOGVIEWER("/base/samples/Sonar", base::samples::Sonar, QSonarLogViewer)

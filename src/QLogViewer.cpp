@@ -74,7 +74,11 @@ bool QStreamSelector::getStreamName(
       QString task_name = QString::fromStdString(stream_name.substr(0, found));
       QString port_name = QString::fromStdString(stream_name.substr(found + 1));
       QString qtype_name = QString::fromStdString(it->getTypeName());
-      stream_map[task_name].push_back(std::make_pair(port_name, qtype_name));
+
+      std::pair<QString, QString> item =  std::make_pair(port_name, qtype_name);
+
+      if (std::find(stream_map[task_name].begin(), stream_map[task_name].end(), item) == stream_map[task_name].end())
+          stream_map[task_name].push_back(item);
     }
   }
 
@@ -268,6 +272,8 @@ QLogViewer::QLogViewer()
 
   control_grid_layout->addWidget(frame, 1, 3);
 
+  QVBoxLayout *left_layout = new QVBoxLayout();
+
   QHBoxLayout *control_layout = new QHBoxLayout();
   control_layout->addWidget(back_button);
   control_layout->addWidget(play_button);
@@ -275,8 +281,13 @@ QLogViewer::QLogViewer()
   control_layout->addWidget(stop_button);
   control_layout->setAlignment(Qt::AlignBottom);
 
+  timestamp_ = new QLabel();
+  timestamp_->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  left_layout->addLayout(control_layout);
+  left_layout->addWidget(timestamp_);
+
   QHBoxLayout *all_layout = new QHBoxLayout();
-  all_layout->addLayout(control_layout);
+  all_layout->addLayout(left_layout);
   all_layout->addLayout(control_grid_layout);
   all_layout->setAlignment(Qt::AlignTop);
 
@@ -328,7 +339,7 @@ void QLogViewer::timeout()
   updateSample();
 }
 
-void QLogViewer::update()
+base::Time QLogViewer::update()
 {
   throw std::runtime_error("update() not implemented");
 }
@@ -341,7 +352,9 @@ void QLogViewer::updateSample()
       stream_.current_sample_index() < (size_t)timeline_->getEndMarkerIndex())
   {
     stream_.set_current_sample_index(stream_.current_sample_index() + step_);
-    update();
+    base::Time t = update();
+    if (!t.isNull())
+      timestamp_->setText(QString::fromStdString(t.toString()));
   }
 }
 

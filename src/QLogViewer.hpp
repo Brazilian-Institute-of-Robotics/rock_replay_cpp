@@ -172,7 +172,7 @@ protected slots:
   void currentIndexEditingFinished();
 
 protected:
-  virtual void update();
+  virtual base::Time update();
 
   QLogViewer();
 
@@ -222,7 +222,9 @@ private:
   QWidget *widget_;
 
   QSpinBox *current_index_box_;
+
   QLabel *total_samples_label_;
+  QLabel *timestamp_;
 
   QSpinBox *start_box_;
   QSpinBox *end_box_;
